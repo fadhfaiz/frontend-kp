@@ -59,8 +59,66 @@
             <td>{{ y.nama_buku }}</td>
             <td>{{ y.harga }}</td>
             <td>
-              <button class="btn btn-outline-success">U</button>
-              <button class="btn btn-outline-danger">D</button>
+              <button
+                class="btn btn-outline-success"
+                data-toggle="modal"
+                data-target="#updateDataBuku"
+              >U</button>
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="updateDataBuku"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalCenterTitle">Update Data Buku</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">NIS</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Kode Buku"
+                          disabled
+                        >
+                      </div>
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">Nama</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Judul Buku"
+                        >
+                      </div>
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">Kelas</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Harga"
+                        >
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-outline-danger" @click="deleteBuku(y.kode_buku)">D</button>
             </td>
           </tr>
         </tbody>
@@ -78,6 +136,23 @@ export default {
       cari: "",
       buku: []
     };
+  },
+  methods: {
+    deleteBuku(kode_buku) {
+      axios
+        .delete(`http://localhost:3000/api/buku`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          data: {
+            kode_buku: kode_buku
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      location.reload();
+    }
   },
   created() {
     axios.get("http://localhost:3000/api/buku").then(res => {

@@ -55,13 +55,73 @@
           </tr>
         </thead>
         <tbody>
-          <tr :key="x" v-for="x in cariData" v-if="x.kelas == kelas || kelas == ''">
+          <tr :key="x.nis" v-for="x in cariData" v-if="x.kelas == kelas || kelas == ''">
             <td>{{ x.nis }}</td>
             <td>{{ x.nama_siswa}}</td>
             <td>{{ x.kelas }}</td>
             <td>
-              <button class="btn btn-outline-success">U</button>
-              <button class="btn btn-outline-danger">D</button>
+              <button
+                class="btn btn-outline-success"
+                @click="updateSiswa(x.nis,x.nama_siswa,x.kelas)"
+                data-toggle="modal"
+                data-target="#updateDataSiswa"
+              >U</button>
+              <!-- Modal -->
+              <div
+                class="modal fade"
+                id="updateDataSiswa"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="exampleModalCenterTitle"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalCenterTitle">Update Data Siswa</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">NIS</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="NIS"
+                          disabled
+                        >
+                      </div>
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">Nama</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Nama"
+                        >
+                      </div>
+                      <div class="form-group">
+                        <!-- <label for="exampleInputPassword1">Kelas</label> -->
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="exampleInputPassword1"
+                          placeholder="Kelas"
+                        >
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <button class="btn btn-outline-danger" @click="deleteSiswa(x.nis)">D</button>
             </td>
           </tr>
         </tbody>
@@ -72,6 +132,7 @@
 
 <script>
 import axios from "axios";
+import swal from "sweetalert";
 export default {
   name: "DataSiswa",
   data() {
@@ -80,6 +141,26 @@ export default {
       kelas: "",
       cari: ""
     };
+  },
+  methods: {
+    deleteSiswa(nis) {
+      axios
+        .delete(`http://localhost:3000/api/dataSiswa`, {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          data: {
+            nis: nis
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      location.reload();
+    },
+    updateSiswa(nis, nama, kelas) {
+      // axios.post('http://localhost:3000/api/dataSiswa')
+    }
   },
   created() {
     axios.get("http://localhost:3000/api/dataSiswa").then(res => {
